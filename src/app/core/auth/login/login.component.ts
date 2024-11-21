@@ -29,7 +29,6 @@ export class AppLoginComponent implements OnInit{
   validLogin = true;
 
   ngOnInit() {
-    console.log('AppLoginComponent initialized');
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required]],
       password: ['', Validators.required]
@@ -37,7 +36,6 @@ export class AppLoginComponent implements OnInit{
   }
 
   onLoginFormSubmitted() {
-    console.log('Login form submitted' + this.loginForm.value);
     if (!this.loginForm.valid) {
       return;
     }
@@ -46,9 +44,9 @@ export class AppLoginComponent implements OnInit{
       takeUntilDestroyed(this.destroyRef)
     ).subscribe(
       {
-        next: (v) => console.log(v),
+        // next: (v) => console.log(v),
         error: (e) => this.validLogin = false,
-        complete: () => console.info('complete') 
+        // complete: () => console.info('complete') 
       }
     );
   }

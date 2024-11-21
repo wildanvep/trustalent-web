@@ -23,7 +23,7 @@
       ></app-sidebar>
       <ng-scrollbar class="position-relative" style="height: 100%">
         <mat-nav-list class="sidebar-list">
-          @for(item of isAdmin ? adminNavItems : userNavItems; track item) {
+          @for(item of userNavItems; track item) {
           <app-nav-item [item]="item" (notify)="sidenav.toggle()">
           </app-nav-item>
           }

@@ -29,7 +29,6 @@ export class AppRegisterComponent {
   }
 
   submit() {
-    // console.log(this.form.value);
     this.router.navigate(['/']);
   }
 }

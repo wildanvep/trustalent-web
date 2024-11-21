@@ -66,3 +66,30 @@ export const adminNavItems: NavItem[] = [
     route: '/user',
   }
 ];
+
+export const superAdminNavItems: NavItem[] = [
+  {
+    navCap: 'Home',
+  },
+  {
+    displayName: 'Dashboard',
+    iconName: 'solar:widget-add-line-duotone',
+    route: '/dashboard',
+  },
+  {
+    navCap: 'Client Management',
+  },
+  {
+    displayName: 'Client',
+    iconName: 'solar:widget-add-line-duotone',
+    route: '/client',
+  },
+  {
+    navCap: 'User Management',
+  },
+  {
+    displayName: 'User',
+    iconName: 'solar:widget-add-line-duotone',
+    route: '/user',
+  }
+];

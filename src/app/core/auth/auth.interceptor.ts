@@ -5,14 +5,11 @@ import {switchMap} from "rxjs/operators";
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authSvc = inject(AuthService);
-  // whenever this HttpContextToken is attached to a request 
-  // as we did to login request earlier
-  // it means the user does not need to be authenticated 
-  // so we don't attach authorization header
+
   if (req.context.get(IS_PUBLIC)) {
     return next(req);
   }
-  if (authSvc.isAuthenticated()) {
+  if (authSvc.isAuthenticated()) {  
     const authRequest = addAuthorizationHeader(req);
     return next(authRequest);
   } else {
@@ -24,6 +21,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     );
   }
 };
+
 const addAuthorizationHeader = (req: HttpRequest<any>) => {
   const token = localStorage.getItem('token');
   return req.clone({

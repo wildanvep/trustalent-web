@@ -66,6 +66,14 @@ export const routes: Routes = [
             (m) => m.UserRoutes
           ),
         canActivate: [authGuard]
+      },
+      {
+        path: 'client',
+        loadChildren: () =>
+          import('./pages/client/client.routes').then(
+            (m) => m.ClientRoutes
+          ),
+        canActivate: [authGuard]
       }
     ],
   },

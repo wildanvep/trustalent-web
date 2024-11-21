@@ -6,7 +6,7 @@ import { JwtHelperService } from "@auth0/angular-jwt";
 import { catchError, Observable, of, tap, throwError } from "rxjs";
 import { environment } from "../../../environments/environment";
 import { IS_PUBLIC } from "./auth.interceptor";
-import { Login, LoginData } from "./login/interfaces";
+import { Login, LoginData, UserInfo } from "./login/interfaces";
 import { LoginResponse } from "./login/types/login-response.type";
 import { User } from "./user.interface";
 
@@ -14,6 +14,7 @@ import { User } from "./user.interface";
   providedIn: 'root'
 })
 export class AuthService {
+
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
   private readonly jwtHelper = inject(JwtHelperService);
@@ -27,7 +28,13 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    return !this.jwtHelper.isTokenExpired();
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      return false;
+    } else {
+      return !this.jwtHelper.isTokenExpired(token);
+    }
   }
 
   login(body: Login): Observable<LoginResponse> {
@@ -37,12 +44,10 @@ export class AuthService {
           const response = data as LoginResponse;
           this.storeTokens(response.data);
           this.scheduleTokenRefresh(response.data.token);
+          this.storeUserInfo(response.data.user_info);
           this.router.navigate(['/']);
         }),
         catchError(error => {
-          if (error.status === 403) {
-            console.log('Invalid credentials');
-          }
           return throwError(() => error);
         })
       );
@@ -55,6 +60,7 @@ export class AuthService {
       .subscribe(() => {
         localStorage.removeItem('token');
         localStorage.removeItem('refresh_token');
+        localStorage.removeItem('user_info');
         this.router.navigate(['/authentication/login']);
       });
   }
@@ -63,10 +69,18 @@ export class AuthService {
     localStorage.setItem('token', data.token);
   }
 
+  storeUserInfo(userInfo: UserInfo): void {
+    localStorage.setItem('user_info', JSON.stringify(userInfo));
+  }
+
   refreshToken(): Observable<LoginResponse | null> {
-    const previous_token = localStorage.getItem('token');
+    const previous_token = localStorage.getItem('token')    
 
     if (!previous_token) {
+      return of();
+    }
+
+    if (!this.jwtHelper.isTokenExpired(previous_token)) {
       return of();
     }
 
@@ -80,9 +94,9 @@ export class AuthService {
       catchError(() => of()),
       tap(data => {
         const response = data as LoginResponse;
-          this.storeTokens(response.data);
-          this.scheduleTokenRefresh(response.data.token);
-          this.router.navigate(['/']);
+        this.storeTokens(response.data);
+        this.scheduleTokenRefresh(response.data.token);
+        this.router.navigate(['/']);
       })
     );
   }

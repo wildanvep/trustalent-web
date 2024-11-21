@@ -3,8 +3,15 @@ export interface Login {
     password: string;
 }
 
+export interface UserInfo {
+    username: string;
+    email: string;
+    name: string;
+    roles: string[];
+}
+
 export interface LoginData {
     token: string;
-    token_expired_at: string;
+    user_info: UserInfo;
 }
 
